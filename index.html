@@ -1,1 +1,72 @@
-
+<!DOCTYPE html>
+<html>
+<head>
+    <title>СкладСтом</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            font-size: 36px;
+        }
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            background: #4facfe;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .btn:hover {
+            background: #00c6ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 СкладСтом</h1>
+        <p style="color: #666; font-size: 18px;">Веб-панель управления складом</p>
+        
+        <p style="margin: 30px 0; font-size: 16px; color: #333;">
+            Эта страница открывается прямо в Telegram!<br>
+            Здесь можно будет смотреть склад, статистику и отчеты.
+        </p>
+        
+        <button class="btn" onclick="alert('Функция в разработке!')">📦 Посмотреть склад</button>
+        <button class="btn" onclick="alert('Ищем товары...')">🔍 Поиск товара</button>
+        <button class="btn" onclick="alert('Товары для заказа')">🛒 Что заказать?</button>
+        
+        <div style="margin-top: 40px; color: #999; font-size: 14px;">
+            <p>Открыто через Telegram Mini App</p>
+            <p>Для возврата в бота закрой эту вкладку</p>
+        </div>
+    </div>
+    
+    <script>
+        if(window.Telegram && Telegram.WebApp) {
+            // Работаем внутри Telegram
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
+        }
+    </script>
+</body>
+</html>
