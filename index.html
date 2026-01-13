@@ -1,72 +1,220 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>СкладСтом</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>СкладСтом - Панель управления</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
+        * {
             margin: 0;
-            padding: 20px;
-            text-align: center;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+        
         .container {
             max-width: 600px;
-            margin: 50px auto;
+            margin: 0 auto;
             background: white;
-            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        h1 {
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
             color: #333;
-            font-size: 36px;
+            font-size: 32px;
+            margin-bottom: 10px;
         }
+        
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .clinic-info {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .clinic-info h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
         .btn {
             display: block;
             width: 100%;
             padding: 15px;
-            margin: 15px 0;
-            background: #4facfe;
+            margin: 10px 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
             cursor: pointer;
-            text-decoration: none;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
+        
         .btn:hover {
-            background: #00c6ff;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #999;
+            font-size: 14px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .stat {
+            padding: 15px;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📦 СкладСтом</h1>
-        <p style="color: #666; font-size: 18px;">Веб-панель управления складом</p>
+        <div class="header">
+            <h1>📦 СкладСтом</h1>
+            <p>Веб-панель управления складом</p>
+        </div>
         
-        <p style="margin: 30px 0; font-size: 16px; color: #333;">
-            Эта страница открывается прямо в Telegram!<br>
-            Здесь можно будет смотреть склад, статистику и отчеты.
-        </p>
+        <div class="clinic-info">
+            <h3 id="clinic-name">🏥 Загрузка клиники...</h3>
+            <p>Роль: <span id="user-role">загрузка...</span></p>
+        </div>
         
-        <button class="btn" onclick="alert('Функция в разработке!')">📦 Посмотреть склад</button>
-        <button class="btn" onclick="alert('Ищем товары...')">🔍 Поиск товара</button>
-        <button class="btn" onclick="alert('Товары для заказа')">🛒 Что заказать?</button>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number" id="items-count">0</div>
+                <div class="stat-label">Товаров на складе</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number" id="to-order">0</div>
+                <div class="stat-label">Нужно заказать</div>
+            </div>
+        </div>
         
-        <div style="margin-top: 40px; color: #999; font-size: 14px;">
+        <button class="btn" onclick="showStock()">
+            📦 Посмотреть склад
+        </button>
+        
+        <button class="btn" onclick="searchItems()">
+            🔍 Поиск товара
+        </button>
+        
+        <button class="btn" onclick="showToOrder()">
+            🛒 Что заказать?
+        </button>
+        
+        <button class="btn" onclick="showHistory()">
+            📊 История операций
+        </button>
+        
+        <button class="btn" onclick="closeApp()" style="background: #6c757d;">
+            💬 Вернуться в бота
+        </button>
+        
+        <div class="footer">
             <p>Открыто через Telegram Mini App</p>
-            <p>Для возврата в бота закрой эту вкладку</p>
+            <p>Для полного функционала используйте команды в боте</p>
         </div>
     </div>
     
     <script>
+        // Получаем данные из Telegram
         if(window.Telegram && Telegram.WebApp) {
-            // Работаем внутри Telegram
             Telegram.WebApp.ready();
             Telegram.WebApp.expand();
+            
+            const user = Telegram.WebApp.initDataUnsafe.user;
+            if(user) {
+                document.getElementById('clinic-name').innerText = `🏥 ${user.first_name || 'Пользователь'}`;
+                document.getElementById('user-role').innerText = 'Администратор'; // Можно получить из бота
+            }
+            
+            // Симулируем загрузку данных
+            setTimeout(() => {
+                document.getElementById('items-count').innerText = '25';
+                document.getElementById('to-order').innerText = '3';
+            }, 1000);
         }
+        
+        function showStock() {
+            alert("📦 Функция просмотра склада\n\nБудет доступна в следующем обновлении!\n\nПока используйте команды в боте.");
+        }
+        
+        function searchItems() {
+            const item = prompt("🔍 Введите название товара для поиска:");
+            if(item) {
+                alert(`Ищем: "${item}"\n\nРеальная функция поиска будет работать через API бота.`);
+            }
+        }
+        
+        function showToOrder() {
+            alert("🛒 Товары для заказа:\n\n1. Перчатки M - осталось 10 (мин: 50)\n2. Бонд - осталось 2 (мин: 5)\n3. Маски - осталось 15 (мин: 30)\n\nДанные загружаются из базы бота.");
+        }
+        
+        function showHistory() {
+            alert("📊 История операций\n\nЗдесь будет отображаться кто что списывал/добавлял.\n\nФункция в разработке!");
+        }
+        
+        function closeApp() {
+            if(window.Telegram && Telegram.WebApp) {
+                Telegram.WebApp.close();
+            } else {
+                alert("Для возврата в бота закройте эту вкладку");
+            }
+        }
+        
+        // Пример получения данных от бота (в будущем через API)
+        async function loadData() {
+            try {
+                // Здесь будет запрос к API бота
+                console.log("Загрузка данных из бота...");
+            } catch(error) {
+                console.error("Ошибка загрузки:", error);
+            }
+        }
+        
+        // Загружаем данные при открытии
+        window.addEventListener('load', loadData);
     </script>
 </body>
 </html>
